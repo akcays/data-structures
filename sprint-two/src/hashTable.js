@@ -20,15 +20,30 @@ HashTable.prototype.insert = function(k, v) {
   } else {
     box.set(1, tuple);
   }
+
+  if (this._filled > (.75 * this._limit)) {
+    this._filled = 0;
+    this.resize(2);
+  }
 };
 
-HashTable.prototype.resize = function() {
-  var newLimit = this._limit * 2;
+HashTable.prototype.resize = function(factor) {
+  this._limit = this._limit * factor;
   var oldStorage = this._storage;
   //create a new this._storage with new limit
-  this._limit = newLimit;
+  this._storage = LimitedArray(this._limit);
   //loop through oldStorage, and for each value in each tuple, 
-    //reasign it using this.insert to this._storage
+  var ht = this;
+  oldStorage.each(function(box) {
+    if (box) {
+      //reasign it using this.insert to this._storage
+      box.each(function(tuple) {
+        if (tuple) {
+          ht.insert(tuple[0], tuple[1]);
+        }
+      });
+    }
+  });
 
 };
 
@@ -46,6 +61,7 @@ HashTable.prototype.retrieve = function(k) {
 };
 
 HashTable.prototype.remove = function(k) {
+  this._filled--;
   var index = getIndexBelowMaxForKey(k, this._limit);
   var box = this._storage.get(index);
   box.each(function(tuple, i) {
@@ -53,6 +69,10 @@ HashTable.prototype.remove = function(k) {
       box.set(i, undefined);
     }
   });
+  if (this._filled > 1 && this._filled < (.25 * this._limit)) {
+    this._filled = 0;
+    this.resize(.5);
+  }
 };
 
 
