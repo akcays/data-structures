@@ -56,7 +56,7 @@ describe('graph', function() {
 
   it('should execute a callback on each node in the graph', function() {
     var connectToFive = function(item) {
-      graph.addEdge(item, 5);
+      graph.addEdge(item.val, 5);
     };
     graph.addNode(5);
     graph.addNode(2);
