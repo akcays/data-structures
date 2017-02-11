@@ -60,6 +60,65 @@ Graph.prototype.forEachNode = function(cb) {
   _.each(this.nodes, cb);
 };
 
+//find shortest path from one node to the next
+Graph.prototype.findNode = function(value) {
+  return _.find(this.nodes, function(node) {
+    return (node.val === value);
+  });
+};
+
+Graph.prototype.findPath = function(startVal, endVal) {
+  
+  //helper function
+  var findVal = function(node, val) {
+    var found = false;
+    _.each(node.edges, function(node, key) {
+      if (Number(key) === val) {
+        found = node;
+      }
+    });
+    return found;
+  };
+
+  startNode = this.findNode(startVal); //starting node for search
+  var paths = [];   //this is the array to be returned
+
+  //check first node
+  var found = findVal(startNode, endVal);
+  if (found) {
+    curPath = [found.val];
+    paths.push(curPath);
+  }
+
+  //if it wasn't found on the first node, try all of its friends
+  if (paths.length === 0) {
+    _.each(startNode.edges, function(node) {
+      var found = findVal(node, endVal);
+      if (found) {
+        var curPath = [node.val, found.val];
+        paths.push(curPath);
+      } 
+    });
+  }
+
+  if (paths.length === 0) {
+    _.each(startNode.edges, function (node) {
+      _.each(node.edges, function(childNode) {
+        var found = findVal(childNode, endVal);
+        if (found) {
+          var curPath = [node.val, childNode.val, found.val];
+          paths.push(curPath);
+        }
+      });
+    });
+  }
+
+  console.log(paths);
+
+  return paths;
+
+};
+
 /*
  * Complexity: What is the time complexity of the above functions?
  */

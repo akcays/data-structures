@@ -68,4 +68,31 @@ describe('graph', function() {
     expect(graph.hasEdge(3, 5)).to.equal(true);
     expect(graph.hasEdge(5, 5)).to.equal(true);
   });
+
+
+  it('should have a find function that locates a node and returns it', function() {
+    for (var i = 1; i <= 8; i++) {
+      graph.addNode(i); 
+    }
+    expect(graph.contains(4)).to.equal(true);
+    expect(graph.findNode(4).val).to.equal(4);
+    expect(graph.findNode(9)).to.equal(undefined);
+  });
+
+  it('should find the shortest path between two nodes and return the values on the way', function() {
+    for (var i = 1; i <= 8; i++) {
+      graph.addNode(i); 
+    }
+    graph.addEdge(1, 2);
+    graph.addEdge(1, 3);
+    graph.addEdge(2, 4);
+    graph.addEdge(2, 5);
+    graph.addEdge(5, 6);
+    graph.addEdge(5, 7);
+    expect(graph.findPath(1, 2)).to.eql([[2]]);
+    expect(graph.findPath(1, 3)).to.eql([[3]]);
+    expect(graph.findPath(3, 1)).to.eql([[1]]);
+    expect(graph.findPath(1, 4)).to.eql([[2, 4]]);
+    expect(graph.findPath(1, 6)).to.eql([[2, 5, 6]]);
+  });
 });
