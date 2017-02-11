@@ -69,72 +69,30 @@ Graph.prototype.findNode = function(value) {
 
 Graph.prototype.findPath = function(startVal, endVal) {
   
-  //helper function
-  var findVal = function(node, val) {
-    var found = false;
-    _.each(node.edges, function(node, key) {
-      if (Number(key) === val) {
-        found = node;
-      }
-    });
-    return found;
-  };
-
   startNode = this.findNode(startVal); //starting node for search
   var paths = [];   //this is the array to be returned
 
-  //check first node
-  
-  ///wrap in function (startNode, endVal, and curPath)
-  var count = 0;
-
-
   var checkPath = function(node, endVal, curPath, parVal) {
-    debugger;
-    if (count < 50) {
-      count ++; 
-      var found = findVal(node, endVal);
-      if (found) {
-        var temp = curPath.slice();
-        curPath.push(found.val);
-        paths.push(curPath);
+    var found = (node.val === endVal);
+    if (found) {
+      curPath.push(endVal);
+      paths.push(curPath);
+    } else { 
+      curPath.push(node.val);
+      _.each(node.edges, function(childNode) {
+        temp = curPath.slice(); //log curret state of curPath, so that if it 
+                                //gets screwed up during checkpath, next time check 
+                                //path is called, it will be called with a clean copy
+                                //of curPath
+        if (childNode.val !== parVal) { //if childNode is not the parent node
+          checkPath(childNode, endVal, curPath, node.val);
+        }
         curPath = temp;
-      } else { 
-        _.each(node.edges, function(childNode) {
-          if (childNode.val !== parVal) { //if childNode is not the parent node
-            console.log('');
-            console.log('node.val (parent) = ' + node.val);
-            console.log('childNode.val (child) = ' + childNode.val);
-            var temp = curPath.slice();
-            curPath.push(childNode.val);
-            checkPath(childNode, endVal, curPath, node.val);
-            curPath = temp;
-          }
-        });
-      }
+      });
     }
-  };
+  };       
 
-  //first level
   checkPath(startNode, endVal, [], startNode.val);
-
-  //second level
-  // if (paths.length === 0) {
-  //   _.each(startNode.edges, function(node) {
-  //     checkPath(node, endVal, [node.val]);
-  //   });
-  // }
-
-  // //third level
-  // if (paths.length === 0) {
-  //   _.each(startNode.edges, function (node) {
-  //     _.each(node.edges, function(childNode) {
-  //       checkPath(childNode, endVal, [node.val, childNode.val]);
-  //     });
-  //   });
-  // }
-
-  console.log(paths);
 
   return paths;
 
