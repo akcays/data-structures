@@ -3,6 +3,7 @@ var LinkedList = function() {
   list.head = null;
   list.tail = null;
 
+
   list.addToTail = function(value) {
     var node = Node(value); //create new node
     if (list.tail) { //if there's already something in the list
@@ -31,9 +32,27 @@ var LinkedList = function() {
     var curr = list.head;
     while (curr) {
       if (curr.value === target) {
-        return true;
+        return curr;
       }
       curr = curr.next;
+    }
+    return false;
+  };
+
+  list.insert = function(node, val) {
+    var newNode = Node(val);
+    newNode.next = node.next;
+    node.next = newNode;
+  };
+
+  list.remove = function(node) {
+    var curr = list.head;
+    while (curr) {
+      if (curr.next === node) {
+        curr.next = node.next;
+        node.next = null;
+        return node;
+      }
     }
     return false;
   };
@@ -49,6 +68,7 @@ var Node = function(value) {
 
   return node;
 };
+
 
 /*
  * Complexity: What is the time complexity of the above functions?
