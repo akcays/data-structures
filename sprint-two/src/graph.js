@@ -68,11 +68,11 @@ Graph.prototype.findNode = function(value) {
 };
 
 Graph.prototype.findPath = function(startVal, endVal) {
-  
   startNode = this.findNode(startVal); //starting node for search
   var paths = [];   //this is the array to be returned
-
-  var checkPath = function(node, endVal, curPath, parVal) {
+  
+  //recursive checked path function
+  var checkPath = function(node, endVal, curPath) {
     var found = (node.val === endVal);
     if (found) {
       curPath.push(endVal);
@@ -80,20 +80,18 @@ Graph.prototype.findPath = function(startVal, endVal) {
     } else { 
       curPath.push(node.val);
       _.each(node.edges, function(childNode) {
-        temp = curPath.slice(); //log curret state of curPath, so that if it 
-                                //gets screwed up during checkpath, next time check 
-                                //path is called, it will be called with a clean copy
-                                //of curPath
-        if (childNode.val !== parVal) { //if childNode is not the parent node
+        if (curPath.indexOf(childNode.val) < 0 ) { //check that childNode hasn't already been visite       
+          var temp = curPath.slice(); 
           checkPath(childNode, endVal, curPath, node.val);
+          curPath = temp;
         }
-        curPath = temp;
       });
     }
   };       
 
-  checkPath(startNode, endVal, [], startNode.val);
+  checkPath(startNode, endVal, []); //initiate recursive function
 
+  console.log(paths);
   return paths;
 
 };

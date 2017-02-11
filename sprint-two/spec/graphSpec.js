@@ -80,19 +80,20 @@ describe('graph', function() {
   });
 
   it('should find the shortest path between two nodes and return the values on the way', function() {
-    for (var i = 1; i <= 3; i++) {
+    for (var i = 1; i <= 4; i++) {
       graph.addNode(i); 
     }
     graph.addEdge(1, 2);
     graph.addEdge(1, 3);
-    // graph.addEdge(2, 4);
-    // graph.addEdge(2, 5);
+    graph.addEdge(2, 3);
+    graph.addEdge(3, 4);
+    graph.addEdge(2, 4);
     // graph.addEdge(5, 6);
     // graph.addEdge(5, 7);
     // expect(graph.findPath(1, 2)).to.eql([[2]]);
     // expect(graph.findPath(1, 3)).to.eql([[3]]);
     // expect(graph.findPath(3, 1)).to.eql([[1]]);
-    expect(graph.findPath(1, 2)).to.eql([[1,2]]);
+    expect(graph.findPath(1, 4)).to.eql([[1, 2, 4], [1, 3, 4]]);
     // expect(graph.findPath(1, 6)).to.eql([[2, 5, 6]]);
   });
 });
