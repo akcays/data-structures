@@ -86,28 +86,37 @@ Graph.prototype.findPath = function(startVal, endVal) {
   //check first node
   
   ///wrap in function (startNode, endVal, and curPath)
+  var count = 0;
 
-  var checkPath = function(node, endVal, curPath) {
-    var found = findVal(node, endVal);
-    if (found) {
-      curPath.push(found.val);
-      paths.push(curPath);
-    } else {         
-      _.each(node.edges, function(childNode) {
-        debugger;
-        if (childNode.val !== node.val) { //if childNode is not the parent node
-          console.log('');
-          console.log('node.val (parent) = ' + node.val);
-          console.log('childNode.val (child) = ' + childNode.val);
-          curPath.push(childNode.val);
-          checkPath(childNode, endVal, curPath);
-        }
-      });
+
+  var checkPath = function(node, endVal, curPath, parVal) {
+    debugger;
+    if (count < 50) {
+      count ++; 
+      var found = findVal(node, endVal);
+      if (found) {
+        var temp = curPath.slice();
+        curPath.push(found.val);
+        paths.push(curPath);
+        curPath = temp;
+      } else { 
+        _.each(node.edges, function(childNode) {
+          if (childNode.val !== parVal) { //if childNode is not the parent node
+            console.log('');
+            console.log('node.val (parent) = ' + node.val);
+            console.log('childNode.val (child) = ' + childNode.val);
+            var temp = curPath.slice();
+            curPath.push(childNode.val);
+            checkPath(childNode, endVal, curPath, node.val);
+            curPath = temp;
+          }
+        });
+      }
     }
   };
 
   //first level
-  checkPath(startNode, endVal, []);
+  checkPath(startNode, endVal, [], startNode.val);
 
   //second level
   // if (paths.length === 0) {
