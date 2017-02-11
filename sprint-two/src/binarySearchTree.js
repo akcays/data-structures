@@ -50,7 +50,18 @@ bstMethods.contains = function(val) {
   return (leftHas || rightHas);
 };
 
-bstMethods.depthFirstLog = function() {};
+//cb is a function we want to call on every value in the tree.
+bstMethods.depthFirstLog = function(cb) {
+  cb(this.value);
+
+  //while this has left and right, call depthFirstLog on left and right
+  if (this.right) {
+    this.right.depthFirstLog(cb);
+  }
+  if (this.left) {
+    this.left.depthFirstLog(cb);
+  }
+};
 
 
 /*
