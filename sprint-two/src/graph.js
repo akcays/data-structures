@@ -84,31 +84,31 @@ Graph.prototype.findPath = function(startVal, endVal) {
   var paths = [];   //this is the array to be returned
 
   //check first node
-  var found = findVal(startNode, endVal);
-  if (found) {
-    curPath = [found.val];
-    paths.push(curPath);
-  }
+  
+  ///wrap in function (startNode, endVal, and curPath)
+  var checkPath = function(node, endVal, curPath) {
+    var found = findVal(node, endVal);
+    if (found) {
+      curPath.push(found.val);
+      paths.push(curPath);
+    }
+  };
 
-  //if it wasn't found on the first node, try all of its friends
+  //first level
+  checkPath(startNode, endVal, []);
+
+  //second level
   if (paths.length === 0) {
     _.each(startNode.edges, function(node) {
-      var found = findVal(node, endVal);
-      if (found) {
-        var curPath = [node.val, found.val];
-        paths.push(curPath);
-      } 
+      checkPath(node, endVal, [node.val]);
     });
   }
 
+  //third level
   if (paths.length === 0) {
     _.each(startNode.edges, function (node) {
       _.each(node.edges, function(childNode) {
-        var found = findVal(childNode, endVal);
-        if (found) {
-          var curPath = [node.val, childNode.val, found.val];
-          paths.push(curPath);
-        }
+        checkPath(childNode, endVal, [node.val, childNode.val]);
       });
     });
   }
